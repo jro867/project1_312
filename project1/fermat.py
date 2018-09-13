@@ -1,4 +1,5 @@
 import random
+import math
 
 
 
@@ -21,16 +22,20 @@ def prime_test(N, k):
 	return 'prime'
 
 
-def mod_exp(x, y, N):
-    # You will need to implements this function and change the return value.
+def mod_exp(x,y,n):
 
-	return 1
+    if y == 0 : return 1
+    z = mod_exp(x, math.floor(y/2), n)
+
+    #checking if y is even
+    if y % 2 == 0:
+        return (z**2) % n
+    else:
+        return x*(z**2) % n
 
 
 def probability(k):
-    # You will need to implements this function and change the return value.
-
-    return 0.0
+    return 1 - ((1/2)**k)
 
 
 def is_carmichael(N,a):
