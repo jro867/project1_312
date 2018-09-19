@@ -3,21 +3,24 @@ import math
 
 
 
-def prime_test(N, k):
+def prime_test(N, NUMBER_OF_ATTEMPTS):
     # You will need to implements this function and change the return value.
+    EMPTY = 0
+    lowest = 1
+    highest = N-1
+    set_of_numbers = set()
+    iterations = 0
 
-    # To generate random values for a, you will most likley want to use
-    # random.randint(low,hi) which gives a random integer between low and
-    #  hi, inclusive.
+    while (len(set_of_numbers) == EMPTY or random_value in set_of_numbers) and (iterations <= NUMBER_OF_ATTEMPTS) :
 
-	# Remember to ensure that all of your random values are unique
+        random_value = random.randint(lowest,highest)
+		#DO THE REST OF LOGIC IN HERE
+
+        if not random_value in set_of_numbers :
+			set_of_numbers.add(random_value)
+			iterations += 1
 
     # Should return one of three values: 'prime', 'composite', or 'carmichael'
-
-	#random_value = generate random(low. hi)
-	#random_value in seed
-	#if false then add to seed otherwise then go again
-	#then keep using it on whatever it is
 
 	return 'prime'
 
