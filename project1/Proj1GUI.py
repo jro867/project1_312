@@ -38,15 +38,20 @@ class Proj1GUI( QWidget ):
 		self.input_n = QLineEdit('312')
 		self.input_k = QLineEdit('10')
 		self.test    = QPushButton('Test Primality')
-		self.output  = QLabel('<i>N is the number to test, K is how many random trials</i>')
-		self.output.setMinimumSize(500,0)
+		# self.output  = QLabel('<i>N is the number to test, K is how many random trials</i>')
+		# self.output.setMinimumSize(500,0)
+
+		self.outputF  = QLabel('<i>N is the number to test, K is how many random trials</i>')
+		self.outputF.setMinimumSize(500,0)
+		self.outputMR = QLabel('')
+		self.outputMR.setMinimumSize(500,0)
 
 		# N
 		h = QHBoxLayout()
 		h.addWidget( QLabel( 'N: ' ) )
 		h.addWidget( self.input_n )
 		vbox.addLayout(h)
-        
+
         # K
 		h = QHBoxLayout()
 		h.addWidget( QLabel( 'K: ' ) )
@@ -59,9 +64,17 @@ class Proj1GUI( QWidget ):
 		h.addWidget( self.test )
 		vbox.addLayout(h)
 
-        # Output
+        # # Output
+		# h = QHBoxLayout()
+		# h.addWidget( self.output )
+		# vbox.addLayout(h)
+
+		# Output
 		h = QHBoxLayout()
-		h.addWidget( self.output )
+		h.addWidget( self.outputF )
+		vbox.addLayout(h)
+		h = QHBoxLayout()
+		h.addWidget( self.outputMR )
 		vbox.addLayout(h)
 
         # When the Test button is clicked, call testClicked()
@@ -77,20 +90,35 @@ class Proj1GUI( QWidget ):
 			# Make sure inputs are valid integers
 			n = int( self.input_n.text() )
 			k = int( self.input_k.text() )
-		
-			result = fermat.prime_test(n,k)
-			
-			if result == 'prime':
-				prob = fermat.probability(k)
-				self.output.setText( '<i>Result:</i> {:d} <b>is prime</b> with probability {:5.15f}'.format(n,prob) )
-			elif result == 'carmichael':
-				self.output.setText('<i>Result:</i> {:d} is not prime because it is a <b>Carmichael number</b>'.format(n))
+
+			# result = fermat.prime_test(n,k)
+			ret_fermat,ret_mr = fermat.prime_test(n,k)
+
+			# if result == 'prime':
+			# 	prob = fermat.probability(k)
+			# 	self.output.setText( '<i>Result:</i> {:d} <b>is prime</b> with probability {:5.15f}'.format(n,prob) )
+			# elif result == 'carmichael':
+			# 	self.output.setText('<i>Result:</i> {:d} is not prime because it is a <b>Carmichael number</b>'.format(n))
+			# else: # Should be 'composite'
+			# 	self.output.setText('<i>Result:</i> {:d} is <b>not prime</b>'.format(n))
+
+			if ret_fermat == 'prime':
+				prob = fermat.fprobability(k)
+				self.outputF.setText( '<i>Fermat Result:</i> {:d} <b>is prime</b> with probability {:5.15f}'.format(n,prob) )
 			else: # Should be 'composite'
-				self.output.setText('<i>Result:</i> {:d} is <b>not prime</b>'.format(n))
+				self.outputF.setText('<i>Fermat Result:</i> {:d} is <b>not prime</b>'.format(n))
+
+			# Output results from Miller-Rabin and compute the appropriate error bound, if necessary
+			if ret_mr == 'prime':
+				prob = fermat.mprobability(k)
+				self.outputMR.setText( '<i>MR Result:</i> {:d} <b>is prime</b> with probability {:5.15f}'.format(n,prob) )
+			else: # Should be 'composite'
+				self.outputMR.setText('<i>MR Result:</i> {:d} is <b>not prime</b>'.format(n))
 
         # If inputs not valid, display an error
 		except Exception as e:
-			self.output.setText('<i>ERROR:</i> inputs must be integers!')
+			# self.output.setText('<i>ERROR:</i> inputs must be integers!')
+			self.outputF.setText('<i>ERROR:</i> ' + str(e) )
 
 
 
@@ -98,7 +126,7 @@ class Proj1GUI( QWidget ):
 if __name__ == '__main__':
     # This line allows CNTL-C in the terminal to kill the program
 	signal.signal(signal.SIGINT, signal.SIG_DFL)
-    
+
 	app = QApplication(sys.argv)
 	w = Proj1GUI()
 	sys.exit(app.exec())
